@@ -1,4 +1,12 @@
-#cursor {
+/* Custom Cursor - GitHub Repository Style */
+
+/* Hide default cursor globally */
+* {
+  cursor: none !important;
+}
+
+/* Cursor element */
+.cursor {
   background-color: #111;
   height: 32px;
   width: 32px;
@@ -7,4 +15,49 @@
   top: 0;
   left: 0;
   pointer-events: none;
+  z-index: 9999;
+  will-change: transform;
+}
+
+/* Interactive elements styling */
+.hover-target {
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.hover-target:hover {
+  transform: scale(1.02);
+}
+
+/* Button and link enhancements */
+button, a, [role="button"] {
+  transition: all 0.2s ease;
+}
+
+button:hover, a:hover, [role="button"]:hover {
+  transform: translateY(-2px);
+}
+
+/* Responsive - disable on mobile */
+@media (max-width: 768px) {
+  * {
+    cursor: auto !important;
+  }
+  
+  .cursor {
+    display: none;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .hover-target,
+  button, a, [role="button"] {
+    transition: none !important;
+  }
 }

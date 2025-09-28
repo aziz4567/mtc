@@ -4,7 +4,7 @@ import { Palette, Code, Zap, Shield, CheckCircle, ArrowRight } from 'lucide-reac
 
 import VideoSwiper from './VideoSlider';
 
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 const Section2: React.FC = () => {
   return (
     <section className="py-24 bg-black">

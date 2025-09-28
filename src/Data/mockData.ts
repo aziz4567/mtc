@@ -29,6 +29,22 @@ export interface Feature {
   icon: string;
 }
 
+export interface Event {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  attendees: number;
+  maxAttendees: number;
+  imageUrl: string;
+  shortLink?: string;
+  status: 'upcoming' | 'ongoing' | 'passed';
+  category: string;
+  organizer: string;
+}
+
 // Mock user data
 export const mockUsers: User[] = [
   {

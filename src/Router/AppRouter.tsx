@@ -1,9 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Homepage from '../Pages/Public/Homepage';
-import Events from '../Pages/Public/Events';
+import { Homepage, Events, Join } from '../Utils/lazyLoading';
 import { useAuth } from '../Context/AuthContext';
-import Join from '../Pages/Public/join';
+import ErrorBoundary from '../Components/ErrorBoundary';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -37,36 +36,44 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 const AppRouter: React.FC = () => {
   return (
-    <Router>
-      <Routes>
-        <Route 
-          path="/" 
-          element={
-            <PublicRoute>
-              <Homepage />
-            </PublicRoute>
-          } 
-        />
-        <Route 
-          path="/join" 
-          element={
-            <PublicRoute>
-              <Join></Join>
-            </PublicRoute>
-          } 
-        />
-        <Route 
-          path="/events" 
-          element={
-            <PublicRoute>
-              <Events></Events>
-            </PublicRoute>
-          } 
-        />
-        
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+    <ErrorBoundary>
+      <Router>
+        <Routes>
+          <Route 
+            path="/" 
+            element={
+              <PublicRoute>
+                <ErrorBoundary>
+                  <Homepage />
+                </ErrorBoundary>
+              </PublicRoute>
+            } 
+          />
+          <Route 
+            path="/join" 
+            element={
+              <PublicRoute>
+                <ErrorBoundary>
+                  <Join />
+                </ErrorBoundary>
+              </PublicRoute>
+            } 
+          />
+          <Route 
+            path="/events" 
+            element={
+              <PublicRoute>
+                <ErrorBoundary>
+                  <Events />
+                </ErrorBoundary>
+              </PublicRoute>
+            } 
+          />
+          
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
+    </ErrorBoundary>
   );
 };
 

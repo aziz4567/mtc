@@ -123,10 +123,11 @@ const Section1: React.FC = () => {
           <motion.img
             src={logo}
             alt="Logo"
-            className="w-40 h-40 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-[400px] lg:h-[400px] hover:transition-all transition-all"
+            className="hover-target w-40 h-40 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-[400px] lg:h-[400px] hover:transition-all transition-all cursor-pointer hover:scale-105"
             initial={{ y: -500, scale: 0.4, opacity: 0 }}
             animate={{ y: 0, scale: 1, opacity: 1 }}
             transition={{ duration: 2, delay: 1 }}
+            data-cursor-text="MTC Logo"
           />
         </div>
       </div>
