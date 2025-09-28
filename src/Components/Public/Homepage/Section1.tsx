@@ -6,7 +6,7 @@ import { FlipWords } from './FlipWords.tsx';
 import { Users, Code, Zap } from 'lucide-react';
 const Section1: React.FC = () => {
   return (
-    <section id="home" className="pt-24 sm:pt-32 pb-16 sm:pb-20 min-h-screen flex items-center ">
+    <section id="home" className="pt-24 sm:pt-32 pb-16 sm:pb-20 min-h-screen flex items-center bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16">
           {/* Left Content */}

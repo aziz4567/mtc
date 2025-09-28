@@ -4,6 +4,7 @@ import Section2 from '../../Components/Public/Homepage/Section2';
 import About_us from '../../Components/Public/Homepage/About_us';
 import Navbar from '../../Components/Nav/Navbar';
 import CustomNav from '../../Components/CustomNav';
+import JoinUs from '../../Components/Public/Homepage/JoinUs';
 const Homepage: React.FC = () => {
   return (
    
@@ -12,7 +13,7 @@ const Homepage: React.FC = () => {
         <Section1 />
         <About_us/>
         <Section2 />
-        
+        <JoinUs></JoinUs>
       </div>
     
   );
