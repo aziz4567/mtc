@@ -1,13 +1,20 @@
-/* Custom Cursor - GitHub Repository Style */
+/* Adaptive Custom Cursor */
+
+/* CSS Variables for dynamic colors */
+:root {
+  --cursor-bg: #000;
+  --cursor-text: #fff;
+}
 
 /* Hide default cursor globally */
 * {
   cursor: none !important;
 }
 
-/* Cursor element */
-.cursor {
-  background-color: #111;
+/* Adaptive Cursor element */
+.adaptive-cursor {
+  background-color: var(--cursor-bg, #111);
+  color: var(--cursor-text, #fff);
   height: 32px;
   width: 32px;
   border-radius: 50%;
@@ -17,6 +24,24 @@
   pointer-events: none;
   z-index: 9999;
   will-change: transform;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Light cursor variant */
+.adaptive-cursor.light {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Dark cursor variant */
+.adaptive-cursor.dark {
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
 }
 
 /* Interactive elements styling */
