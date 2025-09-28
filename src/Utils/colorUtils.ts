@@ -146,7 +146,7 @@ export function getElementBackgroundColor(element: HTMLElement): [number, number
 }
 
 /**
- * Get optimal cursor colors based on background
+ * Get cursor colors that match section background
  */
 export function getOptimalCursorColors(backgroundColor: [number, number, number]): {
   cursorBg: string;
@@ -156,19 +156,22 @@ export function getOptimalCursorColors(backgroundColor: [number, number, number]
   const [r, g, b] = backgroundColor;
   const isLight = isLightColor(r, g, b);
   
+  // Convert RGB to hex for cursor background
+  const cursorBg = `rgb(${r}, ${g}, ${b})`;
+  
   if (isLight) {
-    // Light background -> dark cursor
+    // Light background -> same light background with dark text
     return {
-      cursorBg: '#000000',
-      cursorText: '#ffffff',
-      isLight: false
-    };
-  } else {
-    // Dark background -> light cursor
-    return {
-      cursorBg: '#ffffff',
+      cursorBg,
       cursorText: '#000000',
       isLight: true
+    };
+  } else {
+    // Dark background -> same dark background with light text
+    return {
+      cursorBg,
+      cursorText: '#ffffff',
+      isLight: false
     };
   }
 }

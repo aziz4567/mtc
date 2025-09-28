@@ -17,12 +17,39 @@ interface CursorColors {
 const AdaptiveCursor: React.FC<AdaptiveCursorProps> = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cursorVariant, setCursorVariant] = useState("default");
-  const [hoverText, setHoverText] = useState("");
+  const [fullText, setFullText] = useState("");
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [displayedWord, setDisplayedWord] = useState("");
   const [cursorColors, setCursorColors] = useState<CursorColors>({
     cursorBg: '#000000',
     cursorText: '#ffffff',
     isLight: false
   });
+
+  // Word cycling effect
+  useEffect(() => {
+    if (cursorVariant === 'text' && fullText) {
+      const words = fullText.split(' ').filter(word => word.length > 0);
+      if (words.length === 0) return;
+
+      const interval = setInterval(() => {
+        setCurrentWordIndex((prevIndex) => {
+          const newIndex = (prevIndex + 1) % words.length;
+          setDisplayedWord(words[newIndex]);
+          return newIndex;
+        });
+      }, 800); // Change word every 800ms
+
+      // Set initial word
+      setDisplayedWord(words[0]);
+      setCurrentWordIndex(0);
+
+      return () => clearInterval(interval);
+    } else {
+      setDisplayedWord('');
+      setCurrentWordIndex(0);
+    }
+  }, [cursorVariant, fullText]);
 
   // Extract and format text content from element
   const extractElementText = useCallback((element: HTMLElement): string => {
@@ -40,11 +67,6 @@ const AdaptiveCursor: React.FC<AdaptiveCursorProps> = () => {
         text = element.textContent?.trim() || 'Heading';
       } else {
         text = element.textContent?.trim() || '';
-      }
-      
-      // Truncate long text
-      if (text.length > 30) {
-        text = text.substring(0, 27) + '...';
       }
       
       return text || 'Text';
@@ -102,12 +124,14 @@ const AdaptiveCursor: React.FC<AdaptiveCursorProps> = () => {
   const textEnter = (element: HTMLElement) => {
     setCursorVariant("text");
     const text = extractElementText(element);
-    setHoverText(text);
+    setFullText(text);
     debouncedColorDetection(element);
   };
   const textLeave = () => {
     setCursorVariant("default");
-    setHoverText("");
+    setFullText("");
+    setDisplayedWord("");
+    setCurrentWordIndex(0);
   };
 
   // Add event listeners to text elements in the document
@@ -155,8 +179,8 @@ const AdaptiveCursor: React.FC<AdaptiveCursorProps> = () => {
         '--cursor-text': cursorColors.cursorText,
       } as React.CSSProperties}
     >
-      {cursorVariant === 'text' && hoverText && (
-        <span className="cursor-text-content">{hoverText}</span>
+      {cursorVariant === 'text' && displayedWord && (
+        <span className="cursor-text-content">{displayedWord}</span>
       )}
     </motion.div>
   );
