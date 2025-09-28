@@ -1,30 +1,21 @@
-// src/components/AdaptiveCursor.tsx - Adaptive color cursor
+// src/components/MirrorCursor.tsx - Simple mirror cursor with word animation
 import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { getElementBackgroundColor, getOptimalCursorColors, debounce } from '../Utils/colorUtils';
+// Import only needed utility
+// Note: debounce is kept for potential performance optimizations
 import "./cursor.css";
 
-interface AdaptiveCursorProps {
+interface MirrorCursorProps {
   // No props needed for this implementation
 }
 
-interface CursorColors {
-  cursorBg: string;
-  cursorText: string;
-  isLight: boolean;
-}
-
-const AdaptiveCursor: React.FC<AdaptiveCursorProps> = () => {
+const MirrorCursor: React.FC<MirrorCursorProps> = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cursorVariant, setCursorVariant] = useState("default");
   const [fullText, setFullText] = useState("");
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [displayedWord, setDisplayedWord] = useState("");
-  const [cursorColors, setCursorColors] = useState<CursorColors>({
-    cursorBg: '#000000',
-    cursorText: '#ffffff',
-    isLight: false
-  });
+  // Mirror cursor doesn't need complex color detection
 
   // Word cycling effect
   useEffect(() => {
@@ -76,19 +67,7 @@ const AdaptiveCursor: React.FC<AdaptiveCursorProps> = () => {
     }
   }, []);
 
-  // Debounced color detection for performance
-  const debouncedColorDetection = useCallback(
-    debounce((element: HTMLElement) => {
-      try {
-        const backgroundColor = getElementBackgroundColor(element);
-        const optimalColors = getOptimalCursorColors(backgroundColor);
-        setCursorColors(optimalColors);
-      } catch (error) {
-        console.warn('Color detection error:', error);
-      }
-    }, 50),
-    []
-  );
+  // No color detection needed for mirror cursor
 
   useEffect(() => {
     const mouseMove = (e: MouseEvent) => {
@@ -111,12 +90,11 @@ const AdaptiveCursor: React.FC<AdaptiveCursorProps> = () => {
       y: mousePosition.y - 16,
     },
     text: {
-      height: 150,
-      width: 150,
-      x: mousePosition.x - 75,
-      y: mousePosition.y - 75,
-      backgroundColor: cursorColors.cursorBg,
-      color: cursorColors.cursorText,
+      height: 120,
+      width: 120,
+      x: mousePosition.x - 60,
+      y: mousePosition.y - 60,
+      backgroundColor: "#ffffff",
     }
   };
 
@@ -125,7 +103,6 @@ const AdaptiveCursor: React.FC<AdaptiveCursorProps> = () => {
     setCursorVariant("text");
     const text = extractElementText(element);
     setFullText(text);
-    debouncedColorDetection(element);
   };
   const textLeave = () => {
     setCursorVariant("default");
@@ -166,18 +143,14 @@ const AdaptiveCursor: React.FC<AdaptiveCursorProps> = () => {
       document.removeEventListener('mouseover', handleMouseOver);
       document.removeEventListener('mouseout', handleMouseOut);
     };
-  }, [debouncedColorDetection, extractElementText]);
+  }, [extractElementText]);
 
   return (
     <motion.div
-      className={`adaptive-cursor ${cursorColors.isLight ? 'light' : 'dark'} ${cursorVariant}`}
+      className={`adaptive-cursor ${cursorVariant}`}
       variants={variants}
       animate={cursorVariant}
       transition={{ type: "spring", stiffness: 500, damping: 28 }}
-      style={{
-        '--cursor-bg': cursorColors.cursorBg,
-        '--cursor-text': cursorColors.cursorText,
-      } as React.CSSProperties}
     >
       {cursorVariant === 'text' && displayedWord && (
         <span className="cursor-text-content">{displayedWord}</span>
@@ -186,4 +159,4 @@ const AdaptiveCursor: React.FC<AdaptiveCursorProps> = () => {
   );
 };
 
-export default AdaptiveCursor;
+export default MirrorCursor;
