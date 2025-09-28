@@ -17,11 +17,42 @@ interface CursorColors {
 const AdaptiveCursor: React.FC<AdaptiveCursorProps> = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cursorVariant, setCursorVariant] = useState("default");
+  const [hoverText, setHoverText] = useState("");
   const [cursorColors, setCursorColors] = useState<CursorColors>({
     cursorBg: '#000000',
     cursorText: '#ffffff',
     isLight: false
   });
+
+  // Extract and format text content from element
+  const extractElementText = useCallback((element: HTMLElement): string => {
+    try {
+      // Get text content with proper handling for different elements
+      let text = '';
+      
+      if (element.hasAttribute('data-cursor-text')) {
+        text = element.getAttribute('data-cursor-text') || '';
+      } else if (element.tagName === 'BUTTON') {
+        text = element.textContent?.trim() || 'Click';
+      } else if (element.tagName === 'A') {
+        text = element.textContent?.trim() || element.getAttribute('href') || 'Link';
+      } else if (element.tagName.startsWith('H')) {
+        text = element.textContent?.trim() || 'Heading';
+      } else {
+        text = element.textContent?.trim() || '';
+      }
+      
+      // Truncate long text
+      if (text.length > 30) {
+        text = text.substring(0, 27) + '...';
+      }
+      
+      return text || 'Text';
+    } catch (error) {
+      console.warn('Text extraction error:', error);
+      return 'Text';
+    }
+  }, []);
 
   // Debounced color detection for performance
   const debouncedColorDetection = useCallback(
@@ -70,9 +101,14 @@ const AdaptiveCursor: React.FC<AdaptiveCursorProps> = () => {
   // Functions to handle cursor variant changes
   const textEnter = (element: HTMLElement) => {
     setCursorVariant("text");
+    const text = extractElementText(element);
+    setHoverText(text);
     debouncedColorDetection(element);
   };
-  const textLeave = () => setCursorVariant("default");
+  const textLeave = () => {
+    setCursorVariant("default");
+    setHoverText("");
+  };
 
   // Add event listeners to text elements in the document
   useEffect(() => {
@@ -106,11 +142,11 @@ const AdaptiveCursor: React.FC<AdaptiveCursorProps> = () => {
       document.removeEventListener('mouseover', handleMouseOver);
       document.removeEventListener('mouseout', handleMouseOut);
     };
-  }, [debouncedColorDetection]);
+  }, [debouncedColorDetection, extractElementText]);
 
   return (
     <motion.div
-      className={`adaptive-cursor ${cursorColors.isLight ? 'light' : 'dark'}`}
+      className={`adaptive-cursor ${cursorColors.isLight ? 'light' : 'dark'} ${cursorVariant}`}
       variants={variants}
       animate={cursorVariant}
       transition={{ type: "spring", stiffness: 500, damping: 28 }}
@@ -118,7 +154,11 @@ const AdaptiveCursor: React.FC<AdaptiveCursorProps> = () => {
         '--cursor-bg': cursorColors.cursorBg,
         '--cursor-text': cursorColors.cursorText,
       } as React.CSSProperties}
-    />
+    >
+      {cursorVariant === 'text' && hoverText && (
+        <span className="cursor-text-content">{hoverText}</span>
+      )}
+    </motion.div>
   );
 };
 
